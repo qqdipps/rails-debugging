@@ -35,7 +35,7 @@ class RsvpsController < ApplicationController
       end
 
       if @event.volunteers_at_limit? && @rsvp.role_volunteer?
-        @rsvp.waitlist_position = (@event.volunteer_waitlist_rsvps.maximum(:waitlist_position) || 0 ) + 1
+        @rsvp.waitlist_position = (@event.volunteer_waitlist_rsvps.maximum(:waitlist_position) || 0) + 1
       end
 
       if @rsvp.save
@@ -43,10 +43,10 @@ class RsvpsController < ApplicationController
 
         RsvpMailer.confirmation(@rsvp).deliver_now
         RsvpMailer.childcare_notification(@rsvp).deliver_now if @rsvp.childcare_info?
-        notice_messages = ['Thanks for signing up!']
+        notice_messages = ["Thanks for signing up!"]
         notice_messages << "We've added you to the waitlist." if @rsvp.waitlisted?
 
-        redirect_to @event, notice: notice_messages.join(' ')
+        redirect_to @event, notice: notice_messages.join(" ")
       else
         render :new
       end
@@ -74,7 +74,7 @@ class RsvpsController < ApplicationController
   def quick_destroy_confirm
     @rsvp = Rsvp.find_by(token: params[:token]) if params[:token].present?
     unless @rsvp
-      redirect_to event_path(@event), notice: 'Unable to find RSVP!'
+      redirect_to event_path(@event), notice: "Unable to find RSVP!"
     end
   end
 
@@ -87,7 +87,7 @@ class RsvpsController < ApplicationController
     end
 
     Rsvp.transaction do
-      @rsvp.destroy
+      @rsvp.delete
       WaitlistManager.new(@event.reload).reorder_waitlist!
     end
 
@@ -136,7 +136,7 @@ class RsvpsController < ApplicationController
   def load_rsvp
     @rsvp = Rsvp.find_by(id: params[:id])
     unless @rsvp && ((@rsvp.user == current_user) || @rsvp.event.organizer?(current_user))
-      redirect_to events_path, notice: 'You are not signed up for this event'
+      redirect_to events_path, notice: "You are not signed up for this event"
     end
   end
 
@@ -151,12 +151,12 @@ class RsvpsController < ApplicationController
   def assign_event
     @event = Event.find_by(id: params[:event_id])
     if @event.nil?
-      redirect_to events_path, notice: 'You are not signed up for this event'
+      redirect_to events_path, notice: "You are not signed up for this event"
     end
   end
 
   def signup_for_new_region?
-    regions = Region.joins(locations: :events).where('events.id IN (?)', current_user.events.pluck(:id)).distinct
+    regions = Region.joins(locations: :events).where("events.id IN (?)", current_user.events.pluck(:id)).distinct
     if regions.empty?
       false
     else

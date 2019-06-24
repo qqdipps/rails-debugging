@@ -77,7 +77,6 @@ class EventsController < ApplicationController
     skip_authorization
     result = EventEditor.new(current_user, params).create
     @event = result.event
-
     flash[:notice] = result.notice if result.notice
     if result.render
       render result.render

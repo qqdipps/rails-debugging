@@ -1,9 +1,12 @@
 class WaitlistManager
   def initialize(event)
+    
     @event = event
+
   end
 
   def reorder_waitlist!
+
     return if event.historical?
 
     Rsvp.transaction do

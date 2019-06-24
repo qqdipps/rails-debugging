@@ -20,12 +20,13 @@
       enlarging the community of people who give back and teach others.
       </p>
                                   
-      <% if @events.empty? %>
+      <% if @events && @events.empty? %>
         <h2>There are currently no upcoming events.</h2>
-      <% end %>
+      <% elsif @events %>
       <% @events.each do |event| %>
         <%= render 'upcoming_event', event: event %>
       <% end %>
+      <%end%>
 
       <script>
         window.whenReady(function () {
